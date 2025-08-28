@@ -50,5 +50,5 @@ It empowers creators with advanced tools and delivers viewers a sleek, AI-powere
 
 ### 2️⃣ Clone the Repository
 ```bash
-git clone https://github.com/your-username/elitetube.git
+git clone https://github.com/SohamSarkar025/elite-tube.git
 cd elitetube
