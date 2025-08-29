@@ -3,7 +3,7 @@ import { UserCircleIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { UserButton, SignInButton, SignedIn, SignedOut } from "@clerk/nextjs";
 export const AuthButton = () => {
-  //TODO: Add Different auth states
+  //TODO: Add Different auth states in future .
   return (
     <>
       <SignedIn>
