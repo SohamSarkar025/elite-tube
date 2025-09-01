@@ -1,13 +1,22 @@
 import { db } from "@/db";
 import { videos } from "@/db/schema";
+import { mux } from "@/lib/mux";
 import { createTRPCRouter, protectedProcedure } from "@/trpc/init";
 import { TRPCError } from "@trpc/server";
+import { PassThrough } from "stream";
 
 export const videosRouter=createTRPCRouter({
    create:protectedProcedure.mutation(async({ctx})=>{
     const {id:userId}=ctx.user;
 
-    // throw new TRPCError({code:"BAD_REQUEST",message:"Specific Message"});
+    const upload = await mux.video.uploads.create({
+        new_asset_settings: {
+            passthrough: userId,
+            playback_policy:["public"],
+            mp4_support: "standard"
+        },
+        cors_origin:"*", //TODO: In production, set to your url 
+    })
 
     const [video]=await db
     .insert(videos)
@@ -19,6 +28,7 @@ export const videosRouter=createTRPCRouter({
 
     return{
         video:video,
+        url:upload.url,
     };
    }),
 });
