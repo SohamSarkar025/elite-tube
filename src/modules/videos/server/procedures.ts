@@ -13,7 +13,6 @@ export const videosRouter=createTRPCRouter({
         new_asset_settings: {
             passthrough: userId,
             playback_policy:["public"],
-            mp4_support: "standard"
         },
         cors_origin:"*", //TODO: In production, set to your url 
     })
@@ -23,6 +22,8 @@ export const videosRouter=createTRPCRouter({
     .values({
         userId,
         title:"Untitled",
+        muxStatus:"waiting",
+       muxUploadId:upload.id,
     })
     .returning();
 
