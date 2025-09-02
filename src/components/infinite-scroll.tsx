@@ -38,6 +38,7 @@ export const InfiniteScroll = ({
       {hasNextPage ? (
         <Button
           variant="secondary"
+          className="bg-white text-black hover:bg-black hover:text-white transition-colors duration-200"
           disabled={!hasNextPage || isFetchingNextPage}
           onClick={() => fetchNextPage()}
         >
