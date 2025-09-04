@@ -28,7 +28,7 @@ export const categories = pgTable("categories", {
     updatedAt: timestamp("updated_at").defaultNow().notNull(),
 }, (t) => [uniqueIndex("name_idx").on(t.name)]);
 
-const categoryRelations=relations(users,({many})=>({
+const categoryRelations=relations(categories,({many})=>({
     videos:many(videos),
 }));
 
@@ -49,7 +49,9 @@ export const videos=pgTable("videos",{
     muxTrackId:text("mux_track_id").unique(),
     muxTrackStatus:text("mux_track_status"),
     thumbnailUrl:text("thumbnail_url"),
+    thumbnailKey:text("thumbnail_key"),
     previewUrl:text("preview_url"),
+    previewKey:text("preview_key"),
     duration: integer("duration").default(0).notNull(),
     visibility:videoVisibility("visibility").default("private").notNull(),
     userId:uuid("user_id").references(()=>users.id,{
