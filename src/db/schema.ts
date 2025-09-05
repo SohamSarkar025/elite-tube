@@ -16,9 +16,7 @@ export const users = pgTable("users",{
     updatedAt: timestamp("updated_at").defaultNow().notNull(),
 },(t) => [uniqueIndex("clerk_id_idx").on(t.clerkId)]);
 
-const userRelations=relations(users,({many})=>({
-    videos:many(videos),
-}));
+
 
 export const categories = pgTable("categories", {
     id: uuid("id").primaryKey().defaultRandom(),
@@ -28,7 +26,13 @@ export const categories = pgTable("categories", {
     updatedAt: timestamp("updated_at").defaultNow().notNull(),
 }, (t) => [uniqueIndex("name_idx").on(t.name)]);
 
+//Changed by Ramkrishna (Dev 1) 
+//TODO: CHECK IF ERROR OCCURED IN CATEGORIES
+
 const categoryRelations=relations(categories,({many})=>({
+    videos:many(videos),
+}));
+const userRelations=relations(users,({many})=>({
     videos:many(videos),
 }));
 
