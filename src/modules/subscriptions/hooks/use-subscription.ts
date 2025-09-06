@@ -8,12 +8,15 @@ interface UseSubscriptionProps {
     userId: string,
     isSubscribed: boolean;
     fromVideoId?: string;
+    //Added
+    onSuccess?: (newStatus: boolean) => void; // optional callback
 }
 
 export const useSubscription = ({
     userId,
     isSubscribed,
     fromVideoId,
+    onSuccess,
 }: UseSubscriptionProps) => {
     const clerk = useClerk();
     const utils = trpc.useUtils();
@@ -22,10 +25,10 @@ export const useSubscription = ({
         onSuccess: () => {
             toast.success("Subscribed");
             // TODO: reinvalidate subsriptions.getMany, users.getOne
-
             if (fromVideoId) {
                 utils.videos.getOne.invalidate({ id: fromVideoId })
             }
+             if (onSuccess) onSuccess(false); // call callback with new status
         },
         onError: (error) => {
             toast.error("Something went wrong")
@@ -64,6 +67,6 @@ export const useSubscription = ({
 
     return {
         isPending,
-        onClick,
+        onClick,                                                                                                                           
     };
 }
