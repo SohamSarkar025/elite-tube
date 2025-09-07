@@ -82,6 +82,61 @@ export const videosRouter = createTRPCRouter({
       return existingVideo;
   }),
 
+  revalidate:protectedProcedure
+  .input(z.object({id:z.string().uuid() }))
+.mutation(async ({ ctx, input }) => {
+  try {
+    const { id: userId } = ctx.user;
+
+    const [existingVideo] = await db
+      .select()
+      .from(videos)
+      .where(and(eq(videos.id, input.id), eq(videos.userId, userId)));
+
+    if (!existingVideo) {
+      throw new TRPCError({ code: "NOT_FOUND", message: "Video not found" });
+    }
+
+    if (!existingVideo.muxUploadId) {
+      throw new TRPCError({ code: "BAD_REQUEST", message: "No Mux upload ID" });
+    }
+
+    const upload = await mux.video.uploads.retrieve(existingVideo.muxUploadId);
+
+    if (!upload || !upload.asset_id) {
+      throw new TRPCError({ code: "BAD_REQUEST", message: "Invalid Mux upload" });
+    }
+
+    const asset = await mux.video.assets.retrieve(upload.asset_id);
+
+    if (!asset || !asset.playback_ids || asset.playback_ids.length === 0) {
+      throw new TRPCError({ code: "BAD_REQUEST", message: "No playback IDs available" });
+    }
+
+    const playbackId = asset.playback_ids[0].id;
+    const duration = asset.duration ? Math.round(asset.duration * 1000) : 0;
+
+    //TODO: Potentially find a way to revalidate trackId and trackStatus as well
+
+    console.log("Updating video with:", { playbackId, duration });
+
+    const [updatedVideo] = await db
+      .update(videos)
+      .set({
+        muxStatus: asset.status,
+        muxPlaybackId: playbackId,
+        muxAssetId: asset.id,
+        duration,
+      })
+      .where(eq(videos.id, input.id))
+      .returning();
+
+    return updatedVideo;
+  } catch (err) {
+    console.error("Revalidate mutation error:", err);
+    throw err;
+  }
+}),
 
 
   restoreThumbnail: protectedProcedure
