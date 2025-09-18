@@ -120,7 +120,7 @@ export const VideoRowCard = ({ data, size, onRemove }: VideoRowCardProps) => {
               {data.title}
             </h3>
             {size === "default" && (
-              <p className="text-xs to-muted-foreground mt-1">
+              <p className="text-xs text-muted-foreground mt-1">
                 {compactViews} views &bull; {compactLikes} likes
               </p>
             )}
@@ -136,7 +136,7 @@ export const VideoRowCard = ({ data, size, onRemove }: VideoRowCardProps) => {
                 </div>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <p className="text-xs to-muted-foreground w-fit line-clamp-2">
+                    <p className="text-xs text-muted-foreground w-fit line-clamp-2">
                       {data.description ?? "No description"}
                     </p>
                   </TooltipTrigger>
@@ -152,7 +152,7 @@ export const VideoRowCard = ({ data, size, onRemove }: VideoRowCardProps) => {
             )}
             {size === "compact" && <UserInfo size="sm" name={data.user.name} />}
             {size === "compact" && (
-              <p className="text-xs to-muted-foreground mt-1">
+              <p className="text-xs text-muted-foreground mt-1">
                 {compactViews} views &bull; {compactLikes} likes
               </p>
             )}

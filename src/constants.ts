@@ -1,3 +1,4 @@
 export const DEFAULT_LIMIT =5;
 
-export const APP_URL = process.env.VERCEL_URL; //TODO: Change to custom .env variable if deploying outside vercel
+// Crucial to modify .env to production domain (including protocol)
+export const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"; 
