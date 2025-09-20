@@ -5,11 +5,92 @@ import { VideosSection } from "@/modules/studio/ui/sections/videos-section";
 import { baseProcedure, createTRPCRouter, protectedProcedure } from "@/trpc/init";
 import { TRPCError } from "@trpc/server";
 import { and, desc, eq, getTableColumns, inArray, isNotNull, lt, or } from "drizzle-orm";
+import { ViewBuilder } from "drizzle-orm/mysql-core";
 import { UTApi } from "uploadthing/server";
 import { z } from "zod"
 
 
 export const videosRouter = createTRPCRouter({
+    getManySubscribed: protectedProcedure
+          .input(
+              z.object({
+              
+                  
+                  cursor: z.object({
+                      id: z.string().uuid(),  
+                      updatedAt: z.date(),
+                  })
+                      .nullish(),
+                  limit: z.number().min(1).max(100),
+              }),
+          )
+          .query(async ({ input, ctx }) => {
+              const { id: userId } = ctx.user;
+              const { cursor, limit } = input;
+
+              const viewerSubscriptions = db.$with("viewer_subscriptions").as(
+                db
+                  .select({
+                    userId: subscriptions.creatorId,
+                  })
+                  .from(subscriptions)
+                  .where(eq(subscriptions.viewerId, userId))
+              );
+
+
+              const data = await db
+                  .with(viewerSubscriptions)
+                  .select({
+                      ...getTableColumns(videos),
+                      user: users,
+                      viewCount :db.$count(videoViews,eq(videoViews.videoId,videos.id)),
+                      likeCount :db.$count(videoReactions,and(
+                          eq(videoReactions.videoId,videos.id),
+                          eq(videoReactions.type,"like"),
+                      )),
+                      dislikeCount :db.$count(videoReactions,and(
+                          eq(videoReactions.videoId,videos.id),
+                          eq(videoReactions.type,"dislike"),
+                      )),
+                  })
+                  .from(videos)
+                  .innerJoin(users, eq(videos.userId , users.id))
+                  .innerJoin(
+                    viewerSubscriptions,
+                    eq(viewerSubscriptions.userId, users.id)
+                  )
+                  .where(and(
+                      eq(videos.visibility, "public"),
+                      cursor
+                          ? or(
+                              lt(videos.updatedAt, cursor.updatedAt),
+                              and(
+                                  eq(videos.updatedAt, cursor.updatedAt),
+                                  lt(videos.id, cursor.id)
+                              )
+                          )
+                          : undefined,
+                  )).orderBy(desc(videos.updatedAt),desc(videos.id))
+                  //Add 1 to limit to check if there is more data
+                  .limit(limit+1)
+  
+                  const hasMore=data.length >limit;
+                  //Remove the last item if there is more data
+                  const items=hasMore ? data.slice(0,-1):data;
+                  //set the  next cursor to the last item if there is more data
+                  const lastItem=items[items.length-1];
+                  const nextCursor=hasMore ?
+                  {
+                    id:lastItem.id,
+                    updatedAt:lastItem.updatedAt,
+                  }
+                  :null;
+  
+              return {
+                  items,
+                  nextCursor,
+              }
+          }),
     getManyTrending: baseProcedure
           .input(
               z.object({

@@ -1,31 +1,40 @@
 import { cn } from "@/lib/utils";
-
 import { Button, ButtonProps } from "@/components/ui/button";
+import { Loader2 } from "lucide-react";
 
 interface SubscriptionButtonProps {
   onClick: ButtonProps["onClick"];
-  disabled: boolean;
   isSubscribed: boolean;
+  disabled?: boolean;
+  isLoading?: boolean;
   className?: string;
   size?: ButtonProps["size"];
 }
 
 export const SubscriptionButton = ({
   onClick,
-  disabled,
   isSubscribed,
+  disabled = false,
+  isLoading = false,
   className,
   size,
 }: SubscriptionButtonProps) => {
   return (
     <Button
+      type="button"
       size={size}
       variant={isSubscribed ? "secondary" : "default"}
       className={cn("rounded-full", className)}
       onClick={onClick}
-      disabled={disabled}
+      disabled={disabled || isLoading}
     >
-      {isSubscribed ? "Unsubscribe" : "Subscribe"}
+      {isLoading ? (
+        <Loader2 className="w-4 h-4 animate-spin" />
+      ) : isSubscribed ? (
+        "Unsubscribe"
+      ) : (
+        "Subscribe"
+      )}
     </Button>
   );
 };

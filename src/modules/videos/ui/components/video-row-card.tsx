@@ -53,30 +53,32 @@ export const VideoRowCardSkeleton = ({
       <div className={thumbnailVariants({ size })}>
         <VideoThumbnailSkeleton />
       </div>
+
       {/* Info skeleton */}
       <div className="flex-1 min-w-0">
         <div className="flex justify-between gap-x-2">
           <div className="flex-1 min-w-0">
+            {/* Title */}
             <Skeleton
-              className={cn(
-                "h-5 w-[40%]",
-                size === "compact" && "h-4 w-[40%] "
-              )}
+              className={cn("h-5 w-[40%]", size === "compact" && "h-4 w-[50%]")}
             />
-            {size === "default" && (
-              <>
-                <Skeleton className="h-4 w-[20%] mt-1" />
-                <div className="flex items-center gap-2 my-3">
-                  <Skeleton className="size-8 rounded-full" />
-                  <Skeleton className="h-4 w-24" />
-                </div>
-              </>
-            )}
-            {size === "compact" && (
-              <>
-                <Skeleton className="h-4 w-[50%] mt-1" />
-              </>
-            )}
+
+            {/* Views + Likes */}
+            <Skeleton className="h-4 w-[30%] mt-1" />
+
+            {/* User info (always shown) */}
+            <div
+              className={cn(
+                "flex items-center gap-2 mt-2",
+                size === "default" && "my-3"
+              )}
+            >
+              <Skeleton className="size-8 rounded-full" />
+              <Skeleton className="h-4 w-24" />
+            </div>
+
+            {/* Description only in default */}
+            {size === "default" && <Skeleton className="h-4 w-[60%] mt-2" />}
           </div>
         </div>
       </div>
@@ -84,6 +86,129 @@ export const VideoRowCardSkeleton = ({
   );
 };
 
+// export const VideoRowCardSkeleton =  ({
+//   size,
+// }: VariantProps<typeof videoRowCardVariants>) => {
+//   return (
+//     <div className={videoRowCardVariants({ size })}>
+//       {/* Thumbnail skeleton */}
+//       <div className={thumbnailVariants({ size })}>
+//         <VideoThumbnailSkeleton />
+//       </div>
+//       {/* Info skeleton */}
+//       <div className="flex-1 min-w-0">
+//         <div className="flex justify-between gap-x-2">
+//           <div className="flex-1 min-w-0">
+//             <Skeleton
+//               className={cn(
+//                 "h-5 w-[40%]",
+//                 size === "compact" && "h-4 w-[40%] "
+//               )}
+//             />
+//             {size === "default" && (
+//               <>
+//                 <Skeleton className="h-4 w-[20%] mt-1" />
+//                 <div className="flex items-center gap-2 my-3">
+//                   <Skeleton className="size-8 rounded-full" />
+//                   <Skeleton className="h-4 w-24" />
+//                 </div>
+//               </>
+//             )}
+//             {size === "compact" && (
+//               <>
+//                 <Skeleton className="h-4 w-[50%] mt-1" />
+//               </>
+//             )}
+//           </div>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export const VideoRowCard = ({ data, size, onRemove }: VideoRowCardProps) => {
+//   const compactViews = useMemo(() => {
+//     return Intl.NumberFormat("en", {
+//       notation: "compact",
+//     }).format(data.viewCount);
+//   }, [data.viewCount]);
+
+//   const compactLikes = useMemo(() => {
+//     return Intl.NumberFormat("en", {
+//       notation: "compact",
+//     }).format(data.likeCount);
+//   }, [data.likeCount]);
+
+//   return (
+//     <div className={videoRowCardVariants({ size })}>
+//       <Link href={`/videos/${data.id}`} className={thumbnailVariants({ size })}>
+//         <VideoThumbnail
+//           imageUrl={data.thumbnailUrl}
+//           previewUrl={data.previewUrl}
+//           title={data.title}
+//           duration={data.duration}
+//         />
+//       </Link>
+//       {/*Info */}
+//       <div className="flex-1 min-w-0">
+//         <div className="flex justify-between gap-x-2">
+//           <Link href={`/videos/${data.id}`} className="flex-1 min-w-0">
+//             <h3
+//               className={cn(
+//                 "font-medium line-clamp-2",
+//                 size === "compact" ? "text-sm" : "text-base"
+//               )}
+//             >
+//               {data.title}
+//             </h3>
+//             {size === "default" && (
+//               <p className="text-xs text-muted-foreground mt-1">
+//                 {compactViews} views &bull; {compactLikes} likes
+//               </p>
+//             )}
+//             {size === "default" && (
+//               <>
+//                 <div className="flex items-center gap-2 my-3">
+//                   <UserAvatar
+//                     size="sm"
+//                     imageUrl={data.user.imageUrl}
+//                     name={data.user.name}
+//                   />
+//                   <UserInfo size="sm" name={data.user.name} />
+//                 </div>
+//                 <Tooltip>
+//                   <TooltipTrigger asChild>
+//                     <p className="text-xs text-muted-foreground w-fit line-clamp-2">
+//                       {data.description ?? "No description"}
+//                     </p>
+//                   </TooltipTrigger>
+//                   <TooltipContent
+//                     side="bottom"
+//                     align="center"
+//                     className="bg-black/70"
+//                   >
+//                     <p>From the video description</p>
+//                   </TooltipContent>
+//                 </Tooltip>
+//               </>
+//             )}
+//             {size === "compact" && <UserInfo size="sm" name={data.user.name} />}
+//             {size === "compact" && (
+//               <p className="text-xs text-muted-foreground mt-1">
+//                 {compactViews} views &bull; {compactLikes} likes
+//               </p>
+//             )}
+//           </Link>
+//           <div className="flex-none">
+//             <VideoMenu videoId={data.id} onRemove={onRemove} />
+//           </div>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+//New One
 export const VideoRowCard = ({ data, size, onRemove }: VideoRowCardProps) => {
   const compactViews = useMemo(() => {
     return Intl.NumberFormat("en", {
@@ -107,10 +232,12 @@ export const VideoRowCard = ({ data, size, onRemove }: VideoRowCardProps) => {
           duration={data.duration}
         />
       </Link>
-      {/*Info */}
+
+      {/* Info */}
       <div className="flex-1 min-w-0">
         <div className="flex justify-between gap-x-2">
           <Link href={`/videos/${data.id}`} className="flex-1 min-w-0">
+            {/* Title */}
             <h3
               className={cn(
                 "font-medium line-clamp-2",
@@ -119,44 +246,47 @@ export const VideoRowCard = ({ data, size, onRemove }: VideoRowCardProps) => {
             >
               {data.title}
             </h3>
+
+            {/* Views & Likes */}
+            <p className="text-xs text-muted-foreground mt-1">
+              {compactViews} views &bull; {compactLikes} likes
+            </p>
+
+            {/* User info (always visible) */}
+            <div
+              className={cn(
+                "flex items-center gap-2 mt-2",
+                size === "default" && "my-3"
+              )}
+            >
+              <UserAvatar
+                size="sm"
+                imageUrl={data.user.imageUrl}
+                name={data.user.name}
+              />
+              <UserInfo size="sm" name={data.user.name} />
+            </div>
+
+            {/* Description only in default mode */}
             {size === "default" && (
-              <p className="text-xs text-muted-foreground mt-1">
-                {compactViews} views &bull; {compactLikes} likes
-              </p>
-            )}
-            {size === "default" && (
-              <>
-                <div className="flex items-center gap-2 my-3">
-                  <UserAvatar
-                    size="sm"
-                    imageUrl={data.user.imageUrl}
-                    name={data.user.name}
-                  />
-                  <UserInfo size="sm" name={data.user.name} />
-                </div>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <p className="text-xs text-muted-foreground w-fit line-clamp-2">
-                      {data.description ?? "No description"}
-                    </p>
-                  </TooltipTrigger>
-                  <TooltipContent
-                    side="bottom"
-                    align="center"
-                    className="bg-black/70"
-                  >
-                    <p>From the video description</p>
-                  </TooltipContent>
-                </Tooltip>
-              </>
-            )}
-            {size === "compact" && <UserInfo size="sm" name={data.user.name} />}
-            {size === "compact" && (
-              <p className="text-xs text-muted-foreground mt-1">
-                {compactViews} views &bull; {compactLikes} likes
-              </p>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <p className="text-xs text-muted-foreground w-fit line-clamp-2">
+                    {data.description ?? "No description"}
+                  </p>
+                </TooltipTrigger>
+                <TooltipContent
+                  side="bottom"
+                  align="center"
+                  className="bg-black/70"
+                >
+                  <p>From the video description</p>
+                </TooltipContent>
+              </Tooltip>
             )}
           </Link>
+
+          {/* Menu */}
           <div className="flex-none">
             <VideoMenu videoId={data.id} onRemove={onRemove} />
           </div>
