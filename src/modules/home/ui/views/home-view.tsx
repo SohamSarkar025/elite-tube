@@ -1,4 +1,3 @@
-import { Suspense } from "react";
 import { CategoriesSection } from "../sections/categories-section";
 import { HomeVideosSection } from "../sections/home-videos-section";
 

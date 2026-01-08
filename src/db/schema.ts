@@ -1,6 +1,5 @@
 import {  relations } from "drizzle-orm";
 import { pgTable, uuid,text, timestamp, uniqueIndex, integer, pgEnum, primaryKey, foreignKey} from "drizzle-orm/pg-core";
-import { view } from "drizzle-orm/sqlite-core";
 import {
 createInsertSchema,
 createSelectSchema,

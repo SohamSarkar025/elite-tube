@@ -19,7 +19,7 @@ type WebhookEvent=
 | VideoAssetErroredWebhookEvent
 | VideoAssetTrackReadyWebhookEvent
 | VideoAssetDeletedWebhookEvent;
-export const POST =async(request:Response)=>{
+export const POST =async(request:Request)=>{
    if(!SIGNING_SECRET){
     throw new Error("MUX_WEBHOOK_SECRET is not set");
    }

@@ -72,7 +72,7 @@ export const commentsRouter=createTRPCRouter({
         }),
     )
     .query(async ({ input, ctx }) => {
-        const { clerkUserId } = ctx;
+        const { clerkuserId } = ctx;
         const { parentId,videoId, cursor, limit } = input;
 
         let userId;
@@ -80,7 +80,7 @@ export const commentsRouter=createTRPCRouter({
         const [ user ] = await db
         .select()
         .from(users)
-        .where(inArray(users.clerkId, clerkUserId ? [ clerkUserId] : []))
+        .where(inArray(users.clerkId, clerkuserId ? [ clerkuserId] : []))
 
         if(user){
             userId = user.id;

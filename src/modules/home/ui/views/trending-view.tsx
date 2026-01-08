@@ -1,5 +1,3 @@
-import { Suspense } from "react";
-import { HomeVideosSection } from "../sections/home-videos-section";
 import { TrendingVideosSection } from "../sections/trending-videos-section";
 
 export const TrendingView = () => {

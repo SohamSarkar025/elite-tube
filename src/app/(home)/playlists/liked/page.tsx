@@ -1,5 +1,4 @@
 import { DEFAULT_LIMIT } from "@/constants";
-import { HistoryView } from "@/modules/playlists/ui/views/history-view";
 import { LikedView } from "@/modules/playlists/ui/views/liked-view";
 import { HydrateClient, trpc } from "@/trpc/server";
 

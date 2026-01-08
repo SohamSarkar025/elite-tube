@@ -42,7 +42,7 @@ export const VideoTopRow = ({ video }: VideoTopRowProps) => {
   const expandedViews = useMemo(() => {
     return Intl.NumberFormat("en", {
       notation: "standard",
-    }).format(126783);
+    }).format(video.viewCount);
   }, [video.viewCount]);
 
   const compactDate = useMemo(() => {

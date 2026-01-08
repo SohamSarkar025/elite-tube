@@ -15,7 +15,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
-  CopyCheck,
   CopyCheckIcon,
   CopyIcon,
   Globe2Icon,
@@ -49,7 +48,6 @@ import { videoUpdateSchema } from "@/db/schema";
 import { toast } from "sonner";
 import { VideoPlayer } from "@/modules/videos/ui/components/video-player";
 import Link from "next/link";
-import { is } from "drizzle-orm";
 import { snakeCaseToTitle } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
@@ -289,8 +287,8 @@ const FormSectionSuspense = ({ videoId }: FormSectionProps) => {
                   <FormItem>
                     <FormLabel>Category</FormLabel>
                     <Select
+                      value={field.value ?? undefined}
                       onValueChange={field.onChange}
-                      defaultValue={field.value ?? undefined}
                     >
                       <FormControl>
                         <SelectTrigger>
@@ -325,7 +323,7 @@ const FormSectionSuspense = ({ videoId }: FormSectionProps) => {
                         Video Link
                       </p>
                       <div className="flex items-center gap-x-2">
-                        <Link href={`/videos/${video.id}`}>
+                        <Link prefetch href={`/videos/${video.id}`}>
                           <p className="line-clamp-1 text-sm text-blue-500">
                             {fulUrl}
                           </p>
@@ -375,9 +373,14 @@ const FormSectionSuspense = ({ videoId }: FormSectionProps) => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Visibility</FormLabel>
+
                     <Select
+                      value={
+                        typeof field.value === "string"
+                          ? field.value
+                          : undefined
+                      }
                       onValueChange={field.onChange}
-                      defaultValue={field.value ?? undefined}
                     >
                       <FormControl>
                         <SelectTrigger>

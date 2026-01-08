@@ -15,11 +15,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { VideoThumbnail } from "@/modules/videos/ui/components/video-thumbnail";
 import { snakeCaseToTitle } from "@/lib/utils";
-import { Globe2, Globe2Icon, LockIcon } from "lucide-react";
+import { Globe2Icon, LockIcon } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export const VideosSection = () => {

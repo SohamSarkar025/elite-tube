@@ -1,11 +1,11 @@
 import { db } from "@/db";
 import { subscriptions, users, videoReactions, videos, videoUpdateSchema, videoViews } from "@/db/schema";
 import { mux } from "@/lib/mux";
-import { VideosSection } from "@/modules/studio/ui/sections/videos-section";
+// import { VideosSection } from "@/modules/studio/ui/sections/videos-section";
 import { baseProcedure, createTRPCRouter, protectedProcedure } from "@/trpc/init";
 import { TRPCError } from "@trpc/server";
 import { and, desc, eq, getTableColumns, inArray, isNotNull, lt, or } from "drizzle-orm";
-import { ViewBuilder } from "drizzle-orm/mysql-core";
+// import { ViewBuilder } from "drizzle-orm/mysql-core";
 import { UTApi } from "uploadthing/server";
 import { z } from "zod"
 
@@ -225,13 +225,13 @@ export const videosRouter = createTRPCRouter({
   getOne:baseProcedure
   .input(z.object({ id: z.string().uuid() }))
   .query(async ({ input,ctx}) => {
-    const { clerkUserId}=ctx;
+    const { clerkuserId}=ctx;
 
     let userId;
     const [user]=await db
     .select()
     .from(users)
-    .where(inArray(users.clerkId,clerkUserId ? [clerkUserId] : []))
+    .where(inArray(users.clerkId,clerkuserId ? [clerkuserId] : []))
 
     if(user){
       userId=user.id;
@@ -439,7 +439,7 @@ export const videosRouter = createTRPCRouter({
       title:input.title,
       description: input.description,
       categoryId:input.categoryId,
-      visibility: input.visibility,
+      visibility: input.visibility as "public" | "private" | undefined,
       updatedAt:new Date(),
     })
     .where(and(
@@ -499,34 +499,70 @@ export const videosRouter = createTRPCRouter({
         });
       }
 
+      // // 3️⃣ Insert video record in DB
+      // let video;
+      // try {
+      //   [video] = await db.insert(videos)
+      //     .values({
+      //       userId,
+      //       title: "Untitled",
+      //       muxStatus: "waiting",
+      //       muxUploadId: upload.id,
+      //     })
+      //     .returning();
+      //   console.log("Video inserted into DB:", video.id);
+      // } catch (dbError: any) {
+      //   console.error("❌ DB insert failed:", dbError);
+
+      //   if (dbError.code === "23505") {
+      //     throw new TRPCError({
+      //       code: "CONFLICT",
+      //       message: "A video with this upload already exists.",
+      //     });
+      //   }
+
+      //   throw new TRPCError({
+      //     code: "INTERNAL_SERVER_ERROR",
+      //     message: "Failed to create video in DB",
+      //     cause: dbError,
+      //   });
+      // }
+
       // 3️⃣ Insert video record in DB
-      let video;
-      try {
-        [video] = await db.insert(videos)
-          .values({
-            userId,
-            title: "Untitled",
-            muxStatus: "waiting",
-            muxUploadId: upload.id,
-          })
-          .returning();
-        console.log("Video inserted into DB:", video.id);
-      } catch (dbError: any) {
-        console.error("❌ DB insert failed:", dbError);
+let video;
+try {
+  [video] = await db.insert(videos)
+    .values({
+      userId,
+      title: "Untitled",
+      muxStatus: "waiting",
+      muxUploadId: upload.id,
+    })
+    .returning();
+  console.log("Video inserted into DB:", video.id);
 
-        if (dbError.code === "23505") {
-          throw new TRPCError({
-            code: "CONFLICT",
-            message: "A video with this upload already exists.",
-          });
-        }
+} catch (dbError: unknown) {
+  console.error("❌ DB insert failed:", dbError);
 
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "Failed to create video in DB",
-          cause: dbError,
-        });
-      }
+  // Safe type guard
+  if (
+    typeof dbError === "object" &&
+    dbError !== null &&
+    "code" in dbError &&
+    (dbError as { code: string }).code === "23505"
+  ) {
+    throw new TRPCError({
+      code: "CONFLICT",
+      message: "A video with this upload already exists.",
+    });
+  }
+
+  throw new TRPCError({
+    code: "INTERNAL_SERVER_ERROR",
+    message: "Failed to create video in DB",
+    cause: dbError,
+  });
+}
 
       // 4️⃣ Return the video and upload URL
       return { video, url: upload.url };

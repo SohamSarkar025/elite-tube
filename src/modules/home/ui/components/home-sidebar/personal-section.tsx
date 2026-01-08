@@ -8,14 +8,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import {
-  FlameIcon,
-  HistoryIcon,
-  HomeIcon,
-  ListVideoIcon,
-  PlaySquareIcon,
-  ThumbsUpIcon,
-} from "lucide-react";
+import { HistoryIcon, ListVideoIcon, ThumbsUpIcon } from "lucide-react";
 import Link from "next/link";
 import { useAuth, useClerk } from "@clerk/nextjs";
 import { usePathname } from "next/navigation";
@@ -62,7 +55,11 @@ export const PersonalSection = () => {
                   }
                 }}
               >
-                <Link href={item.url} className="flex items-center gap-4">
+                <Link
+                  prefetch
+                  href={item.url}
+                  className="flex items-center gap-4"
+                >
                   <item.icon />
                   <span className="text-sm">{item.title}</span>
                 </Link>

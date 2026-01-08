@@ -29,18 +29,18 @@ import { CommentReplies } from "./comment-replies";
 
 interface CommentItemProps {
   comment: CommentsGetManyOutput["items"][number];
-  variant?:"reply" | "comment",
+  variant?: "reply" | "comment";
 }
 
 export const CommentItem = ({
-   comment,
-  variant="comment",
-  }: CommentItemProps) => {
-    const clerk = useClerk();
+  comment,
+  variant = "comment",
+}: CommentItemProps) => {
+  const clerk = useClerk();
   const { userId } = useAuth();
 
-const [isReplyOpen,setIsReplyOpen]=useState(false);
-const [isRepliesOpen,setIsRepliesOpen]=useState(false);
+  const [isReplyOpen, setIsReplyOpen] = useState(false);
+  const [isRepliesOpen, setIsRepliesOpen] = useState(false);
   const utils = trpc.useUtils();
 
   const remove = trpc.comments.remove.useMutation({
@@ -84,15 +84,15 @@ const [isRepliesOpen,setIsRepliesOpen]=useState(false);
   return (
     <div>
       <div className=" flex gap-4">
-        <Link href={`/users/${comment.userId}`}>
+        <Link prefetch href={`/users/${comment.userId}`}>
           <UserAvatar
-            size={variant==="comment" ? "lg" : "sm"}
+            size={variant === "comment" ? "lg" : "sm"}
             imageUrl={comment.user.imageUrl}
             name={comment.user.name}
           />
         </Link>
         <div className=" flex-1 min-w-0">
-          <Link href={`/users/${comment.userId}`}>
+          <Link prefetch href={`/users/${comment.userId}`}>
             <div className="flex items-center gap-2 mb-0.5">
               <span className="font-medium text-sm pb-0.5">
                 {comment.user.name}
@@ -142,18 +142,18 @@ const [isRepliesOpen,setIsRepliesOpen]=useState(false);
                 {comment.dislikeCount}
               </span>
             </div>
-            {variant==="comment" && (
+            {variant === "comment" && (
               <Button
-              variant="ghost"
-              size="sm"
-              className="h-8"
-              onClick={()=>setIsReplyOpen(true)}
+                variant="ghost"
+                size="sm"
+                className="h-8"
+                onClick={() => setIsReplyOpen(true)}
               >
                 Reply
               </Button>
             )}
           </div>
-        </div> 
+        </div>
         <DropdownMenu modal={false}>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="icon" className="size-8">
@@ -161,7 +161,7 @@ const [isRepliesOpen,setIsRepliesOpen]=useState(false);
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={() =>setIsReplyOpen(true)}>
+            <DropdownMenuItem onClick={() => setIsReplyOpen(true)}>
               <MessageSquareIcon className="size-4" />
               Reply
             </DropdownMenuItem>
@@ -176,38 +176,34 @@ const [isRepliesOpen,setIsRepliesOpen]=useState(false);
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      {isReplyOpen && variant==="comment" && (
+      {isReplyOpen && variant === "comment" && (
         <div className="mt-4 pl-14">
           <CommentForm
-             variant="reply"
-             parentId={comment.id}
-             videoId={comment.videoId}
-             onCancel={()=>setIsReplyOpen(false)}
-             onSuccess={()=>{
+            variant="reply"
+            parentId={comment.id}
+            videoId={comment.videoId}
+            onCancel={() => setIsReplyOpen(false)}
+            onSuccess={() => {
               setIsReplyOpen(false);
               setIsRepliesOpen(true);
-             }}
+            }}
           />
-           
         </div>
       )}
-      {comment.replyCount > 0 && variant==="comment" && (
+      {comment.replyCount > 0 && variant === "comment" && (
         <div className="pl-14">
-         <Button
-         variant="tertiary"
-         size="sm"
-         onClick={()=>setIsRepliesOpen((current)=>!current)}
-         >
-          {isRepliesOpen ? <ChevronUpIcon/> : <ChevronDownIcon/>}
-          {comment.replyCount} replies
-         </Button>
+          <Button
+            variant="tertiary"
+            size="sm"
+            onClick={() => setIsRepliesOpen((current) => !current)}
+          >
+            {isRepliesOpen ? <ChevronUpIcon /> : <ChevronDownIcon />}
+            {comment.replyCount} replies
+          </Button>
         </div>
       )}
-      {comment.replyCount > 0 && variant==="comment" && isRepliesOpen && (
-        <CommentReplies
-        parentId={comment.id}
-        videoId={comment.videoId}
-        />
+      {comment.replyCount > 0 && variant === "comment" && isRepliesOpen && (
+        <CommentReplies parentId={comment.id} videoId={comment.videoId} />
       )}
     </div>
   );

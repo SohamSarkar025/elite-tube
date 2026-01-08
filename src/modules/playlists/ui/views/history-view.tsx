@@ -1,4 +1,3 @@
-import { Suspense } from "react";
 import { HistoryVideosSection } from "../sections/history-videos-section";
 
 export const HistoryView = () => {
